@@ -1,15 +1,19 @@
 <template>
-  <div id="app">
-    <HelloWorld />
+  <div>
+    <Header></Header>
+    <!-- 路由组件出口的地方 -->
+    <router-view></router-view>
+    <Footer></Footer>
   </div>
 </template>
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Header from './components/Header'
+import Footer from './components/Footer'
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components:{
+    Header,
+    Footer
   }
 }
 </script>
