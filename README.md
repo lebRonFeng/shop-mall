@@ -157,3 +157,64 @@ vue-router
 路由的跳转有两种形式：声明式导航router-link，可以进行路由的跳转
 编程式导航push|replace，可以进行路由跳转
 
+### 6.Footer组件显示与隐藏
+
+显示或者隐藏组件：v-if|v-show
+Footer组件：在Home、Search显示Footer组件
+Footer组件：在登录、注册时候是隐藏的
+
+#### 6.1 我们可以根据组件自身上的$route获取当前路由的信息，通过路由路径判断Footer显示与隐藏。
+#### 6.2 配置路由的时候，可以给路由添加路由元信息【meta】，路由需要配置对象，它的key不能乱写。
+
+### 8.路由传参
+
+#### 8.1：路由跳转的几种方式？
+
+比如：A->B
+声明式导航：router-link（务必要有to属性），可以实现路由的跳转
+编程式导航：利用的是组件实例的$router.push|replace方法，可以实现路由的跳转。
+
+#### 8.2：路由传参，参数有几种写法？
+
+params参数：属于路径当中的一部分，需要注意，在配置路由的时候，需要占位
+query参数：不属于路径中的一部分，类似于ajax中的queryString /home?k=v&v=,不需要占位。
+
+### 9.路由参数相关的面试题
+
+#### 1.路由传递参数（对象写法）path是否可以结合params参数一起使用？
+#### 2.如何指定params参数可传可不传？
+
+> 比如：配置路由的时候，占位了（params参数），但是路由跳转的时候就不传递。路径会出问题。
+http://localhost:8080/#/?k=QWE
+
+http://localhost:8080/#/search?k=QWE
+#### 3.params参数可以传递也可以不传递，但是如果传递是空串，如何解决？
+#### 4.路由组件能不能传递props数据？
+
+
+## day2
+
+1.编程式路由跳转到当前路由（参数不变），多次执行会抛出NavigationDuplicated的警告错误？
+--路由跳转有两种形式：声明式导航、编程式导航
+--声明式导航没有这类问题的，因为vue-router底层已经处理好了
+1.1为什么编程式导航进行路由跳转的时候，就会有这种警告错误呢？
+"vue-router":"^3.5.3":最新的vue-router引入promise
+
+1.2通过给push方法传递相应的成功、失败的回调函数，可以捕获到当前错误，可以解决。
+
+1.3通过底部的代码，可以实现解决错误
+this.$router.push({name:"search",params:{keyword:this.keyword},query:{k:this.keyword.toUpperCase()}},()=>{},()=>{});
+
+1.4 this:当前组件实例（search）
+this.$router属性：当前这个属性，属性值VueRouter类的一个实例，当在入口文件注册路由的时候，给组件实例添加$router|$route属性。
+push:VueRouter类的一个实例
+
+function VueRouter(){}
+
+<!-- 原型对象方法 -->
+VueRouter.prototype.push = function(){
+    //函数的上下文为VueRouter类的一个实例
+}
+
+let $router = new VueRouter();
+$router.push(xxx);
