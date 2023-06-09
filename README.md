@@ -218,3 +218,16 @@ VueRouter.prototype.push = function(){
 
 let $router = new VueRouter();
 $router.push(xxx);
+
+2：Home模块组件拆分
+--先把静态页面完成
+--拆分出静态组件
+--获取服务器的数据进行展示
+--动态业务
+
+3：三级联动组件完成
+---由于三级联动，在Home、Search、Detail，把三级联动注册为全局组件。
+好处：只需要注册一次，旧可以在项目中任意地方使用
+
+4：完成其余静态组件
+HTML + CSS + 图片资源 ---信息【结构、样式、图片资源】
