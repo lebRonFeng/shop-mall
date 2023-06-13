@@ -6,21 +6,21 @@
         <h2 class="all">全部商品分类</h2>
         <!-- 三级联动 -->
         <div class="sort">
-          <div class="all-sort-list2">
+          <div class="all-sort-list2" @click="goSearch($event)">
             <div class="item" v-for="(c1,index) in categoryList" :key="c1.categoryId" :class="{cur:currentIndex ==index}">
               <h3 @mouseenter="changeIndex(index)">
-                <a href="">{{c1.categoryName}}</a>
+                <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{c1.categoryName}}</a>
               </h3>
               <!-- 二级、三级分类 -->
               <div class="item-list clearfix" :style="{display:currentIndex == index? 'block':'none'}">
                 <div class="subitem" v-for="(c2,index) in c1.categoryChild" :key="c2.categoryId">
                   <dl class="fore">
                     <dt>
-                      <a href="">{{c2.categoryName}}</a>
+                      <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{c2.categoryName}}</a>
                     </dt>
                     <dd>
                       <em v-for="(c3,index) in c2.categoryChild" :key="c3.categoryId">
-                        <a href="">{{c3.categoryName}}</a>
+                        <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{c3.categoryName}}</a>
                       </em>
                     </dd>
                   </dl>
@@ -91,6 +91,35 @@ export default {
     // 一级分类鼠标移出的事件回调
     leaveIndex(){
       this.currentIndex = -1
+    },
+    goSearch(event){
+      // 最好的解决方法：编程式导航+事件委派
+      // 存在一些问题：时间委派，是把全部的子节点【h3,dt,dl,em】的事件委派给父亲节点
+      // 点击a标签的时候，才会进行路由跳转【怎么能确定点击的一定是a标签】
+      // 存在另一个问题：即使你能确定点击的是a标签，如何区分一级、二级、三级分类的标签。
+
+      // 第一个问题：把子节点当中的a标签，我加上自定义属性data-categoryName,其余的子节点是没有的
+      let element = event.target;
+      // 获取到当前触发这个事件的节点，需要带有data-categoryname这样的节点【一定是a标签】
+      // 节点有一个属性dataset属性，可以获取节点的自定义属性与属性值
+      let {categoryname,category1id,category2id,category3id} = element.dataset
+      // 如果标签身上拥有categoryname，一定是a标签
+      if(categoryname){
+        // 整理路由跳转的参数
+        let location = {name: 'search'};
+        let query = { categoryName: categoryname};
+        // 一级分类、二级分类、三级分类的a标签
+        if(category1id){
+          query.category1id = category1id;
+        }else if(category2id){
+          query.category2id = category2id;
+        }else{
+          query.category3id = category3id;
+        }
+        // 整理完参数
+        location.query = query;
+        this.$router.push(location)
+      }
     }
   }
 };
