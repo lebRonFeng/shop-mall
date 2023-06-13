@@ -8,15 +8,19 @@
   </div>
 </template>
 <script>
-import Header from './components/Header'
-import Footer from './components/Footer'
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 export default {
-  name: 'App',
-  components:{
+  name: "App",
+  components: {
     Header,
-    Footer
-  }
-}
+    Footer,
+  },
+  mounted() {
+    // 派发一个action|获取商品分类的三级列表的数据
+    this.$store.dispatch("categoryList");
+  },
+};
 </script>
 
 <style>

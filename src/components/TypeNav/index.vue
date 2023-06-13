@@ -2,33 +2,35 @@
   <div class="type-nav">
     <div class="container">
       <!-- 时间委派|事件委托 -->
-      <div @mouseleave="leaveIndex">
+      <div @mouseleave="leaveShow" @mouseenter="enterShow">
         <h2 class="all">全部商品分类</h2>
         <!-- 三级联动 -->
-        <div class="sort">
-          <div class="all-sort-list2" @click="goSearch($event)">
-            <div class="item" v-for="(c1,index) in categoryList" :key="c1.categoryId" :class="{cur:currentIndex ==index}">
-              <h3 @mouseenter="changeIndex(index)">
-                <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{c1.categoryName}}</a>
-              </h3>
-              <!-- 二级、三级分类 -->
-              <div class="item-list clearfix" :style="{display:currentIndex == index? 'block':'none'}">
-                <div class="subitem" v-for="(c2,index) in c1.categoryChild" :key="c2.categoryId">
-                  <dl class="fore">
-                    <dt>
-                      <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{c2.categoryName}}</a>
-                    </dt>
-                    <dd>
-                      <em v-for="(c3,index) in c2.categoryChild" :key="c3.categoryId">
-                        <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{c3.categoryName}}</a>
-                      </em>
-                    </dd>
-                  </dl>
+        <transition name="sort">
+          <div class="sort" v-show="show">
+            <div class="all-sort-list2" @click="goSearch($event)">
+              <div class="item" v-for="(c1,index) in categoryList" :key="c1.categoryId" :class="{cur:currentIndex ==index}">
+                <h3 @mouseenter="changeIndex(index)">
+                  <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{c1.categoryName}}</a>
+                </h3>
+                <!-- 二级、三级分类 -->
+                <div class="item-list clearfix" :style="{display:currentIndex == index? 'block':'none'}">
+                  <div class="subitem" v-for="(c2,index) in c1.categoryChild" :key="c2.categoryId">
+                    <dl class="fore">
+                      <dt>
+                        <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{c2.categoryName}}</a>
+                      </dt>
+                      <dd>
+                        <em v-for="(c3,index) in c2.categoryChild" :key="c3.categoryId">
+                          <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{c3.categoryName}}</a>
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
       <nav class="nav">
         <a href="###">服装城</a>
@@ -56,13 +58,16 @@ export default {
   data(){
     return {
       // 存储用户鼠标移上哪一个一级分类
-      currentIndex:-1
+      currentIndex:-1,
+      show:true
     }
   },
   // 组件挂载完毕，可以向服务器发请求
   mounted(){
-    // 通知vuex发请求，获取数据，存储与仓库中
-    this.$store.dispatch('categoryList');
+    // 如果不是Home路由组件，将typeNav进行隐藏
+    if(this.$route.path!='/home'){
+      this.show = false
+    }
   },
   computed:{
     ...mapState({
@@ -88,10 +93,6 @@ export default {
       this.currentIndex = index;
     },50),
 
-    // 一级分类鼠标移出的事件回调
-    leaveIndex(){
-      this.currentIndex = -1
-    },
     goSearch(event){
       // 最好的解决方法：编程式导航+事件委派
       // 存在一些问题：时间委派，是把全部的子节点【h3,dt,dl,em】的事件委派给父亲节点
@@ -116,11 +117,28 @@ export default {
         }else{
           query.category3id = category3id;
         }
-        // 整理完参数
-        location.query = query;
-        this.$router.push(location)
+
+        // 判断：如果路由跳转的时候，带有params参数，捎带传递过去
+        if(this.$route.params){
+          location.params = this.$route.params;
+          location.query = query;
+          this.$router.push(location)
+        }
+        
       }
-    }
+    },
+    // 当鼠标移入，让商品分类展示
+    enterShow(){
+      this.show = true;
+    },
+    // 当鼠标离开的时候，让商品分类不展示
+    leaveShow(){
+      this.currentIndex = -1
+      if(this.$route.path!='/home'){
+        this.show = false;
+      }
+
+    },
   }
 };
 </script>
@@ -245,6 +263,18 @@ export default {
           background: skyblue;
         }
       }
+    }
+
+    // 过渡动画样式
+    .sort-enter{
+      height: 0;
+    }
+    .sort-enter-to{
+      height: 461px;
+    }
+
+    .sort-enter-active{
+      transition: all .5s linear;
     }
   }
 }
