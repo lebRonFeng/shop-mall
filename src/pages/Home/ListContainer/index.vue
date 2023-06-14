@@ -97,28 +97,38 @@ import Swiper from 'swiper';
 export default {
   name: "ListContainer",
   mounted(){
-    // 派发action:通过vuex发起ajax请求，将数据存储在仓库中
     this.$store.dispatch('getBannerList')
     // 在new Swiper实例之前，页面中结构必须得有【现在老师把swiper实例放在mounte这里发现不行】
     // 因为dispatch当中涉及到异步语句，导致v-for遍历得时候结构还没有完全，因此不行
-    setTimeout(() => {
-      var mySwiper = new Swiper(document.querySelector('.swiper-container'),{
-        loop:true,
-        pagination:{
-          el:'.swiper-pagination',
-          clickable:true
-        },
-        navigation:{
-          nextEl:'.swiper-button-next',
-          prevEl:'.swiper-button-prev',
-        }
-      })
-    }, 1000);
   },
   computed:{
     ...mapState({
       bannerList:state => state.home.bannerList
     })
+  },
+  watch:{
+    // 监听bannerList数据的变化，因为这条数据发生过变化----由空数组变为里面有四个元素
+    bannerList:{
+      handler(newValue,oldValue){
+        // 现在咱们通过watch监听bannerList属性的属性值变化
+        // 当前这个函数执行，只能保证bannerList数据已经有了，但是你没办法保证v-for结束了
+        // nextTick:在下次DOM更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的DOM。
+        this.$nextTick(() =>{
+          var mySwiper = new Swiper(document.querySelector('.swiper-container'),{
+            loop:true,
+            pagination:{
+              el:'.swiper-pagination',
+              clickable:true
+            },
+            navigation:{
+              nextEl:'.swiper-button-next',
+              prevEl:'.swiper-button-prev',
+            }
+          })
+        })
+
+      }
+    }
   }
 };
 </script>
