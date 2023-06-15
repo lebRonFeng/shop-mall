@@ -11,3 +11,5 @@ export const reqCategoryList = ()=> requests({url:'product/getBaseCategoryList',
 // 读取banner（home首页轮播图接口）
 export const reqGetBannerList = ()=> mockRequests({url:'/banner',method:'get'});
 
+// 获取floor数据
+export const reqFloorList = ()=> mockRequests({url:'/floor',method:'get'});
