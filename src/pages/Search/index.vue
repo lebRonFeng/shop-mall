@@ -17,11 +17,13 @@
             <li class="with-x" v-if="searchParams.keyword">{{searchParams.keyword}}<i @click="removeKeyword">×</i></li>
             <!-- 品牌的面包屑 -->
             <li class="with-x" v-if="searchParams.trademark">{{searchParams.trademark.split(':')[1]}}<i @click="removeTrademark">×</i></li>
+            <!-- 平台的售卖的属性展示 -->
+            <li class="with-x" v-for="(attrValue,index ) in searchParams.props" :key="index">{{attrValue.split(':')[1]}}<i @click="removeAttr(index)">×</i></li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector @trademarkInfo="trademarkInfo"/>
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo"/>
 
         <!--details-->
         <div class="details clearfix">
@@ -193,6 +195,20 @@
         // 将品牌信息置空
         this.searchParams.trademark = undefined;
         // 再次发请求
+        this.getData();
+      },
+      // 搜集平台属性地方回调函数（自定义事件）
+      attrInfo(attr,attrValue){
+        let props =`${attr.attrId}:${attrValue}:${attr.attrName}`;
+        // 数组去重
+        if(this.searchParams.props.indexOf(props) == -1){
+          this.searchParams.props.push(props);
+        }
+        this.getData();
+      },
+
+      removeAttr(index){
+        this.searchParams.props.splice(index,1);
         this.getData();
       }
     },
