@@ -30,23 +30,11 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isOne}" @click="changeOrder('1')">
+                  <a>综合 <span v-show="isOne && isDesc">↓</span><span v-show="isOne && isAsc">↑</span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active:isTwo}" @click="changeOrder('2')">
+                  <a >价格 <span v-show="isTwo && isDesc">↓</span><span v-show="isTwo && isAsc">↑</span></a>
                 </li>
               </ul>
             </div>
@@ -130,7 +118,8 @@
           // 分类名字
           categoryName: "",
           keyword: "",
-          order: "",
+          // 排序：初始状态应该是综合|降序
+          order: "1:desc",
           pageNo: 1,
           pageSize: 10,
           // 平台售卖属性操作带的参数
@@ -154,7 +143,19 @@
       this.getData();
     },
     computed:{
-      ...mapGetters(['goodsList'])
+      ...mapGetters(['goodsList']),
+      isOne(){
+        return this.searchParams.order.indexOf('1') != -1;
+      },
+      isTwo(){
+        return this.searchParams.order.indexOf('2') != -1;
+      },
+      isAsc(){
+        return this.searchParams.order.indexOf('asc')!=-1;
+      },
+      isDesc(){
+        return this.searchParams.order.indexOf('desc')!=-1;
+      }
     },
     methods:{
       // 向服务器发请求获取search模块数据（根据参数不同返回不同的数据进行展示）
@@ -210,6 +211,21 @@
       removeAttr(index){
         this.searchParams.props.splice(index,1);
         this.getData();
+      },
+      changeOrder(flag){
+        // flag形参，它是一个标记，代表用户点击的是综合（1）价格（2）【用户点击时传进来的】
+        let originFlag = this.searchParams.order.split(":")[0];
+        let originSort = this.searchParams.order.split(":")[1];
+        // 准备一个新的order属性值
+        let newOrder = '';
+        // 点击的是综合
+        if(flag==originFlag){
+          newOrder = `${originFlag}:${originSort=="desc"?"asc":"desc"}`;
+        }else {
+          newOrder = `${flag}:${"desc"}`
+        }
+        this.searchParams.order = newOrder;
+        this.getData();
       }
     },
     watch:{
@@ -222,7 +238,7 @@
         this.searchParams.category2Id = undefined;
         this.searchParams.category3Id = undefined;
       }
-    }
+    },
   }
 </script>
 
