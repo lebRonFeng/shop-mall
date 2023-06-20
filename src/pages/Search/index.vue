@@ -66,35 +66,8 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <!-- 分页器 -->
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPageNo="getPageNo"/>
         </div>
       </div>
     </div>
@@ -103,7 +76,7 @@
 
 <script>
   import SearchSelector from './SearchSelector/SearchSelector'
-  import {mapGetters} from 'vuex';
+  import {mapGetters, mapState} from 'vuex';
   export default {
     name: 'Search',
     components: {
@@ -155,7 +128,11 @@
       },
       isDesc(){
         return this.searchParams.order.indexOf('desc')!=-1;
-      }
+      },
+      // 获取search模块展示产品一共多少页
+      ...mapState({
+        total:state => state.search.searchList.total
+      })
     },
     methods:{
       // 向服务器发请求获取search模块数据（根据参数不同返回不同的数据进行展示）
@@ -225,6 +202,13 @@
           newOrder = `${flag}:${"desc"}`
         }
         this.searchParams.order = newOrder;
+        this.getData();
+      },
+      // 自定义事件的回调函数---获取当前第几页
+      getPageNo(pageNo){
+        // 整理带给服务器参数
+        this.searchParams.pageNo = pageNo;
+        // 再次发请求
         this.getData();
       }
     },
