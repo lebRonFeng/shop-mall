@@ -23,7 +23,7 @@ const actions = {
         // 因为服务器没有返回其余数据，因此咱们不需要三联缓存数据
         let result = await reqAddOrUpdateShopCart(skuId, skuNum);
         // 当前的这个函数如果执行返回Promise
-        if(result.code == 200){
+        if(result.code == 201){
             return "ok"
         }else{
             return Promise.reject(new Error('faile'))
