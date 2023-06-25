@@ -65,7 +65,7 @@
               <div class="choosed"></div>
               <dl v-for="(spuSaleAttr,index) in spuSaleAttrList" :key="spuSaleAttr.id">
                 <dt class="title">{{spuSaleAttr.saleAttrName}}</dt>
-                <dd changepirce="0" :class="{active: spuSaleAttrValue.isChecked==1}" v-for="(spuSaleAttrValue,index) in spuSaleAttr.spuSaleAttrValueList" :key="spuSaleAttrValue.id">{{spuSaleAttrValue.saleAttrValueName}}</dd>
+                <dd changepirce="0" :class="{active: spuSaleAttrValue.isChecked==1}" v-for="(spuSaleAttrValue,index) in spuSaleAttr.spuSaleAttrValueList" :key="spuSaleAttrValue.id" @click="changeActive(spuSaleAttrValue,spuSaleAttr.spuSaleAttrValueList)">{{spuSaleAttrValue.saleAttrValueName}}</dd>
               </dl>
             </div>
             <div class="cartWrap">
@@ -345,6 +345,17 @@ import { mapGetters } from 'vuex'
       // 给子组件的数据
       skuImageList(){
         return this.skuInfo.skuImageList || [];
+      }
+    },
+    methods:{
+      // 产品的售卖属性值切换高亮
+      changeActive(saleAttrValue,arr){
+        // 遍历全部售卖属性值isChecked为0没有高亮了
+        arr.forEach(item => {
+          item.isChecked = '0'
+        })
+        // 点击的哪个售卖属性值
+        saleAttrValue.isChecked = 1;
       }
     }
   }
