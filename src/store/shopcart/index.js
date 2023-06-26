@@ -29,6 +29,27 @@ const actions = {
         }else{
             return Promise.reject(new Error('faile'));
         }
+    },
+    // 删除全部选中商品
+    deleteAllCheckedCart({dispatch,getters}){
+        // context:小仓库，commit【提交mutationsxiugaistate】getters【计算属性】dispatch【派发action】state【当前仓库数据】
+        // 获取购物车中全部的产品(是一个数组)
+        let PromiseAll = [];
+        getters.carList.cartInfoList.forEach(item => {
+            item.isChecked == 1? dispatch('deleteCartListBySkuId', item.skuId):'';
+            // 将每一次返回的promise添加到数组当中
+            PromiseAll.push(promise);
+        })
+        return Promise.all(PromiseAll);
+    },
+    // 修改全部产品的状态
+    updateAllCartIsChecked({dispatch,state},isChecked){
+        let promiseAll = []
+        state.carList[0].cartInfoList.forEach(item => {
+            let promise = dispatch('updateCheckedById',{skuId:item.skuId,isChecked});
+            promiseAll.push(promise);
+        })
+        return Promise.all(promiseAll)
     }
     
 }
