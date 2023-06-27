@@ -53,3 +53,12 @@ export const reqGetCode = (phone) => requests({url:`/user/passport/sendCode/${ph
 
 // 注册
 export const reqUserRegister = (data) => requests({url:'/user/passport/register',data, methods:'post'})
+
+// 登录
+export const reqUserLogin = (data) => requests({url:'/user/passport/login',data,method:'post'})
+
+// 获取用户信息【需要带着用户的token向服务器要用户信息】
+export const reqUserInfo = () => requests({url:'/user/passport/auth/getUserInfo',method:'get'})
+
+// 退出登录
+export const reqLogout = () => requests({url:'/user/passport/logout',method:'get'});
