@@ -5,7 +5,7 @@ import routes from './routes';
 // 使用插件
 Vue.use(VueRouter)
 
-
+import store from '@/store'
 // 先把VueRouter原型对象的push，先保存一份
 let originPush = VueRouter.prototype.push;
 let originReplace = VueRouter.prototype.replace;
@@ -33,7 +33,7 @@ VueRouter.prototype.push = function(location,resolve,reject){
     }
 }
 // 配置路由
-export default new VueRouter({
+let router = new VueRouter({
     routes,
     // 滚动行为
     scrollBehavior (to, from, savedPosition) {
@@ -41,3 +41,38 @@ export default new VueRouter({
     return {y:0};
     }
 })
+
+// 全局守卫，前置守卫（在路由跳转之间进行判断）
+router.beforeEach(async (to,from,next) =>{
+    // next:放行函数 next()放行 next(path)放行到指定路由 next(false)
+    // next();
+    let token = store.state.user.token;
+    if(token){
+        if(to.path == '/login'||to.path == '/register'){
+            next('/')
+        }else{
+            // 登录了，但是去的不是login【home|search|detail|shopcart】
+            // 如果用户名已有 
+            if(name){
+                next();
+            }else{
+                // 没有用户信息，派发action让仓库存储用户信息在跳转
+                try {
+                    await store.dispatch('getUserInfo')
+                } catch (error) {
+                    alert(error.message)
+                    // token失效了，获取不到用户信息
+                    // 清除token
+                    await store.dispatch('userLogout');
+                    next('/login');
+                }
+            }
+            next();
+        }
+    }else{
+        // 未登录暂时没有处理完毕，先这样把
+        next();
+    }5                                                                                                                                                                                                                                      
+
+})
+export default router;
