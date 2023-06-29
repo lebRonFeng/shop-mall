@@ -14,21 +14,6 @@ export const reqGetBannerList = ()=> mockRequests({url:'/banner',method:'get'});
 // 获取floor数据
 export const reqFloorList = ()=> mockRequests({url:'/floor',method:'get'});
 
-// 获取搜索模块数据 地址：/api/list 请求方式：post 参数：需要带参数
-/*
-{
-  "category3Id": "61",
-  "categoryName": "手机",
-  "keyword": "小米",
-  "order": "1:desc",
-  "pageNo": 1,
-  "pageSize": 10,
-  "props": ["1:1700-2799:价格", "2:6.65-6.74英寸:屏幕尺寸"],
-  "trademark": "4:小米"
-}
-
-*/
-
 // 当前这个接口，给服务器传递参数params，至少是一个空对象
 export const reqGetSearchInfo = (params) => requests({url:"/list",method:"post",data:params})
 
@@ -71,3 +56,12 @@ export const reqAddressInfo = ()=>requests({url:'/user/userAddress/auth/findUser
 //获取商品清单
 //URL:/api/order/auth/trade   method:get
 export const reqOrderInfo = ()=>requests({url:'/order/auth/trade',method:'get'});
+
+// 提交订单接口
+export const reqSubmitOrder = (tradeNo,data) => requests({url:`/order/auth/submitOrder?tradeNo=${tradeNo}`,data,method:'post'})
+
+// 获取支付信息
+export const reqPayInfo = (orderId) => requests({url:`/payment/weixin/createNative/${orderId}`,method:'get'});
+
+//获取支付订单状态
+export const reqPayStatus = (orderId)=>requests({url:`/payment/weixin/queryPayStatus/${orderId}`,method:'get'});

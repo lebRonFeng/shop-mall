@@ -94,7 +94,7 @@
       </div>
     </div>
     <div class="sub clearFix">
-      <a class="subBtn">提交订单</a>
+      <a class="subBtn" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
@@ -133,6 +133,30 @@ import {mapState} from 'vuex';
       addressInfo.forEach((item) => (item.isDefault = 0));
       address.isDefault = 1;
     },
+    // 提交订单
+    async submitOrder(){
+      let {tradeNo} = this.orderInfo
+        //其余的六个参数
+      let data = {
+        consignee: this.userDefaultAddress.consignee, //最终收件人的名字
+        consigneeTel: this.userDefaultAddress.phoneNum, //最终收件人的手机号
+        deliveryAddress: this.userDefaultAddress.fullAddress, //收件人的地址
+        paymentWay: "ONLINE", //支付方式
+        orderComment: this.msg, //买家的留言信息
+        orderDetailList: this.orderInfo.detailArrayList, //商品清单
+      };
+      // 需要带参数的：tradeNo
+      let result = await this.$API.reqSubmitOrder(tradeNo,data);
+      // 提交订单成功
+      if(result.code==200){
+        this.orderId = result.data;
+        // 路由跳转+路由传递参数
+        this.$router.push('pay?orderId='+this.orderId);
+        // 提交订单失败
+      } else {
+        alert(result.data);
+      }
+    }
     }
   }
 </script>
