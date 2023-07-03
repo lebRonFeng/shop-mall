@@ -70,9 +70,15 @@ router.beforeEach(async (to,from,next) =>{
             next();
         }
     }else{
-        // 未登录暂时没有处理完毕，先这样把
-        next();
-    }5                                                                                                                                                                                                                                      
+        // 未登录,不能去交易相关、支付线管、个人中心
+        let toPath = to.path;
+        if(toPath.indexOf('/trade')!=-1 || toPath.indexOf('/pay')!=-1 || toPath.indexOf('/center')!=-1){
+            next('/login?redirect='+toPath)
+        }else{
+            next();
+        }
+        
+    }                                                                                                                                                                                                                                     
 
 })
 export default router;
