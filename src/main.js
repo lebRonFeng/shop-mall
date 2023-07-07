@@ -46,6 +46,9 @@ import myPlugins from '@/plugins/myPlugins'
 Vue.use(myPlugins,{
   name:'upper'
 })
+
+// 引入表单验证插件
+import '@/plugins/validate';
 new Vue({
   render: h => h(App),
   // 全局事件总线$bus进行注册

@@ -8,7 +8,6 @@ myPlugins.install = function(Vue,options){
     // Vue.filter......
     // 全局指令
     Vue.directive(options.name,(element,params)=>{
-        console.log(params)
         element.innerHTML = params.value.toUpperCase();
     })  
 }
