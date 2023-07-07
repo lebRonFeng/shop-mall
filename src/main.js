@@ -28,7 +28,24 @@ import router from '@/router';
 // 引入仓库
 import store from '@/store'
 
+
 Vue.config.productionTip = false
+
+import atm from '@/assets/1.gif'
+// 引入插件
+import VueLazyload from 'vue-lazyload'
+// 注册插件
+Vue.use(VueLazyload,{
+  // 懒加载默认的图片
+  loading: atm
+})
+
+// 引入自定义插件
+import myPlugins from '@/plugins/myPlugins'
+
+Vue.use(myPlugins,{
+  name:'upper'
+})
 new Vue({
   render: h => h(App),
   // 全局事件总线$bus进行注册
